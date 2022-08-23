@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load cart %}
+
+{% block content %}
+
+
+<section class="text-center mb-4 item">
+    <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Search" name="search" aria-label="Search" id="item3">
+        <button class="btn btn-outline-warning" type="submit">Search</button>
+    </form>
+    <div class="row">
+        {% for object in object_list %}
+            <div class="col-lg-2 col-md-4 mb-4">
+                <div class="card footer">
+                    <div class="view overlay">
+                        <a href="{{ object.get_absolute_url }}"><img src="{{ object.product_image.url }}" class="card-img-top img-fluid">
+                        </a>
+                    </div>
+                    <div class="card-body" id="cbody">
+                        <h5 class="card-title">{{object.title}} </h5>
+                        {% if object.discount_price %}
+                            <del>₦{{object.original_price}}</del>
+                            ₦{{object.discount_price}}
+                        {% else %}
+                        ₦{{object.original_price}}
+                
+                        {% endif %}
+                        <a href="{{object.get_add_to_cart_url}} " class="btn btn-warning cart" id="cart" onclick="getquantity(); return false;" >Add to Cart</a>
+                
+                        {% comment %} {% get_quantity id=object.id user=request.user.id slug=slug  %}     {% endcomment %}
+                        
+                    </div>
+                </div>
+            </div>
+      
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock content %}

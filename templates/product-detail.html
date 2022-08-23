@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main class="mt-5 pt-4">
+        <div class="container dark-grey-text mt-5">
+            <div class="row wow fadeIn">
+                <div class="col-md-6 mb-4">
+                    <div class="view overlay">
+
+                        <img src="{{ object.product_image.url }}" class="card-img-top">
+                          <div class="mask rgba-white-slight"></div>
+                        </a>
+                      </div>
+
+                </div>
+                <div class="col-md-6 md-4">
+                    <div class="p-4">
+                        <p class="lead">
+                            {% if object.discount_price %}
+                            <span class="mr-1">
+                                <del>₦{{object.original_price}} </del>
+                            </span>
+                            <span class="mr-1">
+                                ₦{{object.discount_price}}
+                            </span>
+                            {% else %}
+                            <span class="mr-1">
+                                ₦{{object.original_price}}
+                            </span>
+                            {% endif %}
+                        </p>
+
+                        <p class="lead font-weight-bold">Description</p>
+                        <p>{{object.description}} </p>
+
+                          <a href="{{object.get_add_to_cart_url}} " class="btn btn-warning btn-md my-0 p">Add to cart</a>
+                          <a href="{{object.get_remove_from_cart}} " class="btn btn-danger btn-md my-0 p">
+                            Remove from cart
+                          </a>
+              
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+
+
+{% endblock content %}

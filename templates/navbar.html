@@ -1,0 +1,59 @@
+{% load cart %}
+
+<nav class="navbar fixed-top navbar-expand-lg white bg-warning" id="head">
+    <!--Left-->
+    <div class="container">
+        <a href="{% url 'ecommerce:product-list' %}" id="navbar1" class="navbar-brand"><strong>TopCommerce</strong></a>
+
+        {% comment %} <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> {% endcomment %}
+
+
+    <!--right-->
+        <div class="navbar navbar-expand" id="navbarNavAltMarkup">
+            
+              <ul class="navbar-nav nav-flex-icons">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item" >
+                        <a href="#" class="nav-link"> 
+                            <div id="shop">
+                                <div class="material-icons  item2 position-relative">shopping_cart 
+                                </div>
+                                <span class="position-absolute start-78 translate-middle badge rounded-circle bg-danger">
+                                    {{request.user|cart_item_count}}
+                                </span> 
+                            
+                                
+                                <span class="item2"> Cart </span>
+                            </div>
+                        </a>
+                    </li>
+        
+                    <li class="nav-item">
+                        <a href="{% url "account_logout" %}" class="nav-link">
+                        <span class="item2"> Logout </span></a>
+                    </li>
+                
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link waves-effect" href="{% url 'account_login' %}">
+                    <span class="item2" > Login </span>
+                    </a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
+                    <span class="item2"> Signup </span>
+                    </a>
+                </li>
+                {% endif %}
+              </ul>   
+        </div>
+        
+
+    </div>
+
+
+
+</nav>
+
