@@ -16,7 +16,7 @@
               <ul class="navbar-nav nav-flex-icons">
                 {% if request.user.is_authenticated %}
                     <li class="nav-item" >
-                        <a href="#" class="nav-link"> 
+                        <a href="{% url 'ecommerce:order-summary' %}" class="nav-link"> 
                             <div id="shop">
                                 <div class="material-icons  item2 position-relative">shopping_cart 
                                 </div>

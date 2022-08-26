@@ -12,11 +12,13 @@
     </form>
     <div class="row">
         {% for object in object_list %}
+            
             <div class="col-lg-2 col-md-4 mb-4">
                 <div class="card footer">
                     <div class="view overlay">
-                        <a href="{{ object.get_absolute_url }}"><img src="{{ object.product_image.url }}" class="card-img-top img-fluid">
+                        <a href="{{ object.get_absolute_url }}"><img src="{{ object.product_image.url }}" class="card-img-top img-fluid" id="img1">
                         </a>
+                        <hr>
                     </div>
                     <div class="card-body" id="cbody">
                         <h5 class="card-title">{{object.title}} </h5>
@@ -27,7 +29,26 @@
                         ₦{{object.original_price}}
                 
                         {% endif %}
-                        <a href="{{object.get_add_to_cart_url}} " class="btn btn-warning cart" id="cart" onclick="getquantity(); return false;" >Add to Cart</a>
+                        {% comment %} {% for cart in cart %} {% endcomment %}
+                        
+                       
+                        {% comment %} {% if cart.quantity >= 1 %} {% endcomment %}
+                            {% comment %} <a href="{{object.get_add_to_cart1_url}} " class="btn btn-warning" id="cart">
+                                <span class="material-symbols-outlined">add</span>
+                            </a>
+                            <span>{{cart.quantity}} </span>
+                            <a href="{{object.get_remove1_one_item}} " class="btn btn-warning" id="cart">
+                                <span class="material-symbols-outlined">remove</span>
+                            </a> {% endcomment %}
+                            
+                        {% comment %} {% else %} {% endcomment %}
+                            <a href="{{object.get_add_to_cart1_url}} " class="btn btn-warning cart" id="cart" onclick="getquantity();" >Add to Cart</a>
+                        {% comment %} {% endif %} {% endcomment %}
+                        {% comment %} {% endfor %} {% endcomment %}
+
+                        
+                        
+                        
                 
                         {% comment %} {% get_quantity id=object.id user=request.user.id slug=slug  %}     {% endcomment %}
                         

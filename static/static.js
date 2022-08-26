@@ -2,7 +2,7 @@
 
 const newcart = document.createElement('div')
 
-codeBlock = '<a href=" {% url "ecommerce:product-list" object.slug %} " class="btn btn-warning" id="cart">' +
+codeBlock = '<a href=" {{object.get_add_to_cart_url }}" class="btn btn-warning" id="cart">' +
                 '<span class="material-symbols-outlined">add</span>' +
             '</a>' +
             '<span>{{num}} </span>' +
@@ -12,21 +12,30 @@ codeBlock = '<a href=" {% url "ecommerce:product-list" object.slug %} " class="b
             
 
 newcart.innerHTML = codeBlock
+// alert('hi')
 
-const buttonall = document.querySelectorAll("#cart")
-const parent = buttonall.parentNode;
+const buttonall = document.querySelectorAll(".btn")
+// const parent = buttonall.parentNode
 
-function getquantity(){
+function getquantity() {
     for (let index = 0; index < buttonall.length; index++) {
         buttonall[index].addEventListener('click', () => {
-            // alert('hi');
-            buttonall.parentNode.replaceChild(newcart, buttonall);
+            alert('hi')
+            buttonall.replaceWith(newcart);
             
         
         });
         
     } 
 }
+
+
+
+// const button = document.getElementById('cart')
+// function getquan() {
+//     button.replaceWith(newcart)
+// }
+// buttonall.parentNode.replaceChild(newcart, buttonall);
 
 
 

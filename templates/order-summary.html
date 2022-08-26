@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <main>
+        <div class="container">
+            <div class="table-responsive text-nowrap">
+                <h2>Order Summary</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope='col'>#</th>
+                            <th scope='col'>Item title</th>
+                            <th scope='col'>Price</th>
+
+                            <th scope='col'>Quantity</th>
+                            <th scope='col'>Total Item Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_item in order_item %}
+                        <tr>
+                            <th scope='row'>{{forloop.counter}} </th>
+                            <td>{{order_item.product.title}} </td>
+                            {% if order_item.product.discount_price %}
+                                <td>
+                                    <del>₦{{order_item.product.original_price}}</del>
+                                    ₦{{order_item.product.discount_price}}
+                                </td>
+                               
+                                {% else %}
+                                <td>₦{{order_item.product.original_price}} </td>
+                            {% endif %}
+                            <td style="display:flex;">
+                                <a href="{% url 'ecommerce:remove-one-item-summary' order_item.product.slug %} " style="text-decoration:none;"><span class="material-icons">remove</span>{{order_item.quantity}} </a>
+                                <a href="{% url "ecommerce:add-to-cart-summary" order_item.product.slug %} "><span class="material-icons">add</span> </a>
+                            </td>
+                            <td>
+                            <span style="margin-right:1rem;">
+                                {% if order_item.product.discount_price %}
+                                    ₦{{order_item.get_discounted_product_price}}
+                                    <span class="btn btn-success">Saving ₦{{order_item.get_amount_saved}}</span>
+                            {% else %}
+                            ₦{{order_item.get_total_product_price}}
+                            {% endif %}
+                            </span>
+                            <a href="{% url 'ecommerce:remove-from-cart-summary' order_item.product.slug %} "><span class="material-icons" style="color: red; float: right">delete</span> </a>
+                            </td>
+
+                            
+                        </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan='5'>Your cart is empty</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <a href="/ecommerce" class="btn btn-primary float-right">Continue shopping</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5">
+                                <a href="#" class="btn btn-warning">Proceed to checkout</a>
+                                <a href="/ecommerce" class="btn btn-warning float-right">Continue shopping</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+
+
+
+{% endblock content %}

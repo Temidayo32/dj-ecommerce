@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "ecommerce",
+    "django_countries",
+    "crispy_forms",
 
     'allauth',
     'allauth.account',
