@@ -1,8 +1,8 @@
 import re
 from socket import fromshare
 from django import forms
-from django.countries.fields import CountryField
-from django.countries.widgets import CountrySelectWidget
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
 
 PAYMENT_OPTIONS = (
     ('S', 'Stripe'),
@@ -10,9 +10,9 @@ PAYMENT_OPTIONS = (
 )
 
 class CheckoutForm(forms.Form):
-    shipping_address1 = forms.CharField(required = False)
+    shipping_address = forms.CharField(required = True)
     shipping_address2 = forms.CharField(required = False)
-    shipping_country = CountryField(blank_label='(select country)').formfield(
+    shipping_country = CountryField(blank_label='select country').formfield(
         required =False,
         widget = CountrySelectWidget(attrs={
             'class': "custom-select d-block w-100",      
@@ -20,7 +20,7 @@ class CheckoutForm(forms.Form):
     shipping_zip = forms.CharField(required=False)
     billing_address = forms.CharField(required =False)
     billing_address2 = forms.CharField(required= False)
-    billing_country = CountryField(blank_label = '(select country)').formfield(
+    billing_country = CountryField(blank_label = 'select country').formfield(
         required= False,
         widget= CountrySelectWidget(attrs={
             'class': "custom-select d-block w-100",
@@ -37,3 +37,19 @@ class CheckoutForm(forms.Form):
         widget = forms.RadioSelect,
         choices = PAYMENT_OPTIONS
     )
+
+
+class StripePaymentForm(forms.Form):
+    stripetoken = forms.CharField(required = False)
+    save = forms.BooleanField(required = False)
+    as_default = forms.BooleanField(required= False)
+
+
+class CouponForm(forms.Form):
+    code = forms.CharField(widget=forms.TextInput(attrs= {
+        'class':'form-control',
+        'placeholder': "Promo Code",
+        'aria-label': "Recipient's username",
+        'aria-describedby': 'basic-addon2',
+
+    }))

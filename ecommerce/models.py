@@ -1,3 +1,6 @@
+from operator import truediv
+import turtle
+import decimal
 from django.db import models
 from django.conf import settings 
 from django.shortcuts import render
@@ -5,9 +8,27 @@ from django.urls import reverse
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db.models.signals import post_save
 import sys
+from django_countries.fields import CountryField
 
 # Create your models here.
+
+
+ADDRESS_CHOICES = (
+    ('B', 'Billing'),
+    ('S', 'Shipping'),
+)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    stripe_customer_id = models.CharField(max_length=50, blank=True, null= True)
+    on_click_purchasing = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+
+
 class Product(models.Model):
     title = models.CharField(max_length=100)
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -99,9 +120,78 @@ class Cart(models.Model):
     orderproduct = models.ManyToManyField(OrderProduct)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(blank=True, null=True)
+    shipping_address = models.ForeignKey('Address', related_name='shipping_address', on_delete= models.SET_NULL, blank = True, null= True)
+    billing_address = models.ForeignKey('Address', related_name= "billing_address", on_delete = models.SET_NULL, blank=True, null=True)
+    ref_code = models.CharField(max_length=20, blank=True, null=True)
+    payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank= True, null = True)
+    coupon = models.ForeignKey("Coupon", on_delete=models.SET_NULL, blank=True, null=True)
+    being_delivered = models.BooleanField(default=False)
+    received = models.BooleanField(default=False)
+    refund_requested = models.BooleanField(default=False)
+    refund_granted = models.BooleanField(default= False)
 
 
     def __str__(self):
         return self.user.username
+
+    def get_total(self):
+        total = 0
+        for order_item in self.orderproduct.all():
+            total += order_item.get_final_price()
+
+        if self.coupon:
+            total -= decimal.Decimal(self.coupon.amount)
+        return total
+
+class Address(models.Model):
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100)
+    zip = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    country = CountryField(multiple=False)
+    default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural = "Addresses"
+
+class Payment(models.Model):
+    stripe_charge_id = models.CharField(max_length=50)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null = True)
+    amount = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=15)
+    amount = models.FloatField()
+
+
+    def __str__(self):
+        return self.code
+
+
+
+def userprofile_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        userprofile = UserProfile.objects.create(user=instance)
+
+post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+
+
+
+
+
 
 

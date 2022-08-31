@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "ecommerce",
     "django_countries",
     "crispy_forms",
+    'paypal.standard.ipn'
 
     'allauth',
     'allauth.account',
@@ -146,3 +148,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = "/ecommerce"
+
+if DEBUG:
+    STRIPE_TEST_PUBLIC_KEY = 'pk_test_51Lc7gICyZ8EUc6l5JLC5uqQtePRBcCCoqZjyDf82hj5GCnJ3Y4vkupQiacLHZaU75ffzA8BkFxZ4BkP1zKpMm0mf00zgn8nGA8'
+    STRIPE_TEST_SECRET_KEY = 'sk_test_51Lc7gICyZ8EUc6l5YyCN5YF0kojxpDkqDAP422qDKNvg81QNVSpS7LEBHecSWqx6Ifw22kUl8iou8SCdsEk1Ovi700MJ2oPB8Z'
+
+
+# STRIPE_PUBLIC_KEY = config('STRIPE_TEST_PUBLIC_KEY')
+# STRIPE_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY')

@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     ProductListView,
+    CheckoutView,
     ProductDetailView,
     OrderSummaryView,
     add_to_cart,
@@ -15,6 +16,9 @@ from .views import (
     add_to_cart_summary,
     remove_one_item_summary,
     remove_from_cart_summary,
+    PaymentView,
+    CouponView,
+    
     
 )
 
@@ -22,6 +26,9 @@ from .views import (
 app_name= "ecommerce"
 
 urlpatterns = [
+    path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
+    path("checkout/", CheckoutView.as_view() , name= "checkout"),
+    path("add-coupon/", CouponView.as_view(), name="add-coupon"),
     path('', ProductListView.as_view(), name= "product-list"),
     path("<slug:slug>/", ProductDetailView.as_view(), name= "product-detail"),
     
@@ -32,6 +39,7 @@ urlpatterns = [
 
     path("remove-from-cart-list/<slug:slug>/",remove_from_cart_list, name= "remove-from-cart-list"),
     path("remove-from-cart-summary/<slug:slug>/",remove_from_cart_summary, name= "remove-from-cart-summary"),
+    
 
     path("add-to-cart-list/<slug:slug>/", add_to_cart_list, name = "add-to-cart-list"),
     path("remove_one_item/<slug:slug>/", remove_one_item, name= "remove-one-item"),
@@ -39,6 +47,5 @@ urlpatterns = [
 
     
     path("remove_one_item_list/<slug:slug>/", remove_one_item_list, name= "remove-one-item-list"),
-    path("order-summary", OrderSummaryView.as_view(), name = "order-summary")
-
+    path("order-summary", OrderSummaryView.as_view(), name = "order-summary"),
 ]

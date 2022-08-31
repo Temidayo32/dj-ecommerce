@@ -27,9 +27,7 @@ function getquantity() {
         });
         
     } 
-}
-
-
+=
 
 // const button = document.getElementById('cart')
 // function getquan() {
