@@ -40,7 +40,7 @@ class CheckoutForm(forms.Form):
 
 
 class StripePaymentForm(forms.Form):
-    stripetoken = forms.CharField(required = False)
+    stripeToken = forms.CharField(required = False)
     save = forms.BooleanField(required = False)
     as_default = forms.BooleanField(required= False)
 
@@ -53,3 +53,10 @@ class CouponForm(forms.Form):
         'aria-describedby': 'basic-addon2',
 
     }))
+
+class RefundForm(forms.Form):
+    ref_code = forms.CharField()
+    message = forms.CharField(widget=forms.Textarea(attrs={
+        'rows': 4
+    }))
+    email = forms.EmailField()

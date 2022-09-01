@@ -18,7 +18,7 @@ from .views import (
     remove_from_cart_summary,
     PaymentView,
     CouponView,
-    
+    RefundView
     
 )
 
@@ -26,6 +26,7 @@ from .views import (
 app_name= "ecommerce"
 
 urlpatterns = [
+    path("request-refund/", RefundView.as_view(), name='request-refund'),
     path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
     path("checkout/", CheckoutView.as_view() , name= "checkout"),
     path("add-coupon/", CouponView.as_view(), name="add-coupon"),
@@ -48,4 +49,5 @@ urlpatterns = [
     
     path("remove_one_item_list/<slug:slug>/", remove_one_item_list, name= "remove-one-item-list"),
     path("order-summary", OrderSummaryView.as_view(), name = "order-summary"),
+    
 ]

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "ecommerce",
     "django_countries",
     "crispy_forms",
-    'paypal.standard.ipn'
+    # 'paypal.standard.ipn'
 
     'allauth',
     'allauth.account',

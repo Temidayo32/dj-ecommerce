@@ -1,3 +1,4 @@
+import email
 from operator import truediv
 import turtle
 import decimal
@@ -180,6 +181,13 @@ class Coupon(models.Model):
 
     def __str__(self):
         return self.code
+
+
+class Refund(models.Model):
+    cart = models.ForeignKey("Cart", on_delete=models.CASCADE)
+    reason = models.TextField()
+    accepted = models.BooleanField(default=True)
+    email = models.EmailField()
 
 
 

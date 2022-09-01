@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
-from .models import OrderProduct, Product, Cart, Address, UserProfile, Coupon, Payment
+from .models import OrderProduct, Product, Cart, Address, UserProfile, Coupon, Payment, Refund
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 import random
 import string
 
-from .forms import CheckoutForm, StripePaymentForm, CouponForm
+from .forms import CheckoutForm, StripePaymentForm, CouponForm, RefundForm
 
 import stripe
 from django.conf import settings
@@ -44,7 +44,7 @@ class CheckoutView(View):
                 'form': form,
                 'order': order,
                 'couponform': CouponForm(),
-                'DISPLAY_COUPON_FORM': True
+00                'DISPLAY_COUPON_FORM': True
             }
 
             ship_address = Address.objects.filter(user = self.request.user, address_type = 'S', default= True)
@@ -206,14 +206,21 @@ class PaymentView(View):
     
     def post(self, *args, **kwargs):
         cart = Cart.objects.get(user = self.request.user, ordered = False)
+        print(cart)
         
+        
+        userprofile = UserProfile.objects.get(user=self.request.user)
         form = StripePaymentForm(self.request.POST)
-        userprofile = UserProfile.objects.get(user= self.request.user)
+        print(form)
+        print(userprofile)
+        print(form.is_valid())
         
         if form.is_valid():
+            print(form.cleaned_data)
             token = form.cleaned_data.get('stripeToken')
             save = form.cleaned_data.get('save')
             use_default = form.cleaned_data.get('use_default')
+            print(token)
 
             if save:
                 if userprofile.stripe_customer_id  != '' and userprofile.stripe_customer_id is not None:
@@ -232,7 +239,9 @@ class PaymentView(View):
             amount = int(cart.get_total() * 100)
 
             try:
+                print('hi')
                 if use_default or save:
+                    
                     charge = stripe.Charge.create(amount=amount, currency="usd", customer=userprofile.stripe_customer_id)
 
                 else:
@@ -650,6 +659,40 @@ class CouponView(View):
                 messages.info(self.request, "You do not have an active order")
                 return redirect("ecommerce:checkout")
             
+
+class RefundView(View):
+    def get(self, *args, **kwargs):
+        form =RefundForm()
+        context = {
+            'form': form
+        }
+        return render(self.request, 'request-refund.html', context)
+
+    def post(self, *args, **kwargs):
+        form = RefundForm(self.request.POST)
+        if form.is_valid():
+            ref_code = form.cleaned_data.get("ref_code")
+            message = form.cleaned_data.get('message')
+            email = form.cleaned_data.get('email')
+
+            try:
+                cart = Cart.objects.get(ref_code=ref_code)
+                cart.refund_requested = True
+                cart.save()
+
+                refund =Refund()
+                refund.cart = cart
+                refund.reason = message
+                refund.email = email
+                refund.save()
+
+                messages.info(self.request, "Your request was received")
+                return redirect("ecommerce:request-refund")
+
+            except ObjectDoesNotExist:
+                messages.info(self.request, "This order does not exist")
+                return redirect("ecommerce:request-refund")
+
 
 
 
