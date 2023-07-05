@@ -125,7 +125,7 @@ button:hover {
             <div class="current-card-form">
               <form action="." method="post" class="stripe-form">
                   {% csrf_token %}
-                  <input type="hidden" name="use_default" value="true">
+                  <input type="hidden" name="as_default" value="true">
                   <div class="stripe-form-row">
                     <button id="stripeBtn">Submit Payment</button>
                   </div>

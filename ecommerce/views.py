@@ -44,7 +44,7 @@ class CheckoutView(View):
                 'form': form,
                 'order': order,
                 'couponform': CouponForm(),
-00                'DISPLAY_COUPON_FORM': True
+                'DISPLAY_COUPON_FORM': True
             }
 
             ship_address = Address.objects.filter(user = self.request.user, address_type = 'S', default= True)
@@ -93,6 +93,7 @@ class CheckoutView(View):
                 else:
                     print("User in entering a new shipping address")
                     shipping_address = form.cleaned_data.get("shipping_address")
+                    
                     shipping_address2 = form.cleaned_data.get('shipping_address2')
                     shipping_country = form.cleaned_data.get('shipping_country')
                     shipping_zip =form.cleaned_data.get('shipping_zip')
@@ -224,9 +225,10 @@ class PaymentView(View):
 
             if save:
                 if userprofile.stripe_customer_id  != '' and userprofile.stripe_customer_id is not None:
-                    customer = stripe.Customer.retrieve(userprofile.stripe_customer_id)
+                    customer = stripe.Customer.create_source(userprofile.stripe_customer_id, source=token)
+                    # customer = stripe.Customer.retrieve(userprofile.stripe_customer_id, expand=['sources'])
 
-                    customer.sources.create(source=token)
+                    # customer.sources.create(source=token)
 
                 else:
                     customer = stripe.Customer.create( email = self.request.user.email,)
